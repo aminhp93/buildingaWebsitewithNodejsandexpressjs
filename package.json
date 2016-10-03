@@ -2,13 +2,16 @@
   "name": "project",
   "version": "1.0.0",
   "description": "\"Files for building a website with Node and Express on Lynda.com'",
-  "main": "index.js",
+  "main": "app/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -e css,ejs,js,json --watch app --ignore feedback.json"
   },
   "author": "Amin",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0"
+    "ejs": "^2.5.2",
+    "express": "^4.14.0",
+    "reload": "^1.0.1"
   }
 }
