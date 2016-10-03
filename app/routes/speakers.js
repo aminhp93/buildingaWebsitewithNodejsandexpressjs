@@ -1,39 +1,41 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/speakers', function(req, res){
-	var info = '';
-	var dataFile = req.app.get('appData');
-	dataFile.speakers.forEach(function(item){
-		info += `
-		<li>
-			<h2>${item.name}</h2>
-			<img src="/images/speakers/${item.shortname}_tn.jpg" alt="speaker">
-			<p>${item.summary}</p>
-		</li>
-		`;
-	})
-	res.send(`
-		<link rel="stylesheet" type="text/css" href="/css/style.css">
-		<h1>Academy Meetups</h1>
-		${info}
-		<script src="/reload/reload.js"></script>
-	`);
+router.get('/speakers', function(req, res) {
+  var data = req.app.get('appData');
+  var pagePhotos = [];
+  var pageSpeakers = data.speakers;
+
+  data.speakers.forEach(function(item) {
+    pagePhotos = pagePhotos.concat(item.artwork);
+  });
+
+  res.render('speakers', {
+    pageTitle: 'Speakers',
+    artwork: pagePhotos,
+    speakers: pageSpeakers,
+    pageID: 'speakerList'
+  });
 });
 
+router.get('/speakers/:speakerid', function(req, res) {
+  var data = req.app.get('appData');
+  var pagePhotos = [];
+  var pageSpeakers = [];
 
-router.get('/speakers/:speaker_id', function(req, res){
-	var dataFile = req.app.get('appData');
-	var speaker = dataFile.speakers[req.params.speaker_id]
-	res.send(`
-		<link rel="stylesheet" type="text/css" href="/css/style.css">
-		<h1>${speaker.title}</h1>
-		<h2>${speaker.name}</h2>
-		<img src="/images/speakers/${speaker.shortname}_tn.jpg" alt="speaker">
-		<p>${speaker.summary}</p>
-		<script src="/reload/reload.js"></script>
+  data.speakers.forEach(function(item) {
+    if (item.shortname == req.params.speakerid) {
+      pageSpeakers.push(item);
+      pagePhotos = pagePhotos.concat(item.artwork);
+    }
+  });
 
-	`);
+  res.render('speakers', {
+    pageTitle: 'Speaker Info',
+    artwork: pagePhotos,
+    speakers: pageSpeakers,
+    pageID: 'speakerDetail'
+  });
 });
 
 module.exports = router;
